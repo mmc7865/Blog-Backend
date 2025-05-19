@@ -25,7 +25,11 @@ const userSchema = new mongoose.Schema({
   },
   profile: {
     type: String
-  }
+  },
+  blogs: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Blog'
+  }]
 });
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {

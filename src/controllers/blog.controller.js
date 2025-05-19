@@ -1,5 +1,6 @@
 const Blog = require("../models/blog.model");
 const CustomError = require("../utils/cutomError");
+const User = require('../models/user.modle')
 
 module.exports.blogCreateController = async (req, res, next) => {
   const { heading, description } = req.body;
@@ -13,6 +14,12 @@ module.exports.blogCreateController = async (req, res, next) => {
     });
 
     if (!blog) return next(new CustomError("Error in blog creation", 400));
+
+    const user = await User.findByIdAndUpdate({_id: userId},{
+$push:{
+  blogs: blog._id
+}
+    })
 
     res.status(201).json({
       success: true,
