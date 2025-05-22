@@ -24,12 +24,24 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
   profile: {
-    type: String
+    type: String,
   },
-  blogs: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Blog'
-  }]
+  followings: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  ],
+  followers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  ],
+  blogs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Blog",
+    },
+  ],
 });
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {

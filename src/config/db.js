@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const connect = ()=>{
-    mongoose.connect("mongodb://0.0.0.0/blog")
+    mongoose.connect(process.env.MONGODB_URI)
     .then(()=>{
         console.log('Server connected to Database')
     })
