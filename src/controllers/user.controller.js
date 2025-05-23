@@ -100,30 +100,47 @@ module.exports.followerController = async (req, res, next) => {
     console.log("Exist :-----> ", isUserExistInFollowing);
 
     if (isUserExistInFollowing) {
-       await User.findByIdAndUpdate(loggedInUserID,{
-        $pull: {
-          followings: id 
-        }
-      })
-      const user = await User.findByIdAndUpdate(id,{
-        $pull: {
-          followers: loggedInUserID
-        }
-      })
-      console.log("followers :------->",user.followings)
+      await User.findByIdAndUpdate(
+        loggedInUserID,
+        {
+          $pull: {
+            followings: id,
+          },
+        },
+        { new: true }
+      );
+      const user = await User.findByIdAndUpdate(
+        id,
+        {
+          $pull: {
+            followers: loggedInUserID,
+          },
+        },
+        { new: true }
+      );
+      console.log("followers :------->", user.followings);
     } else {
-      const followedUser = await User.findByIdAndUpdate(id, {
-        $push: {
-          followers: loggedInUserID,
+      const followedUser = await User.findByIdAndUpdate(
+        id,
+        {
+          $push: {
+            followers: loggedInUserID,
+          },
         },
-      });
-      const loggedInUser = await User.findByIdAndUpdate(loggedInUserID, {
-        $push: {
-          followings: id,
+        { new: true }
+      );
+      const loggedInUser = await User.findByIdAndUpdate(
+        loggedInUserID,
+        {
+          $push: {
+            followings: id,
+          },
         },
-      });
-      if (!followedUser) return next(new customError("Error in following", 400));
-      
+        { new: true }
+      );
+      if (!followedUser)
+        return next(new customError("Error in following", 400));
+
       res.status(200).json({
         success: true,
         message: "user followed",
@@ -132,9 +149,9 @@ module.exports.followerController = async (req, res, next) => {
       });
     }
     res.status(200).json({
-        success: true,
-        message: "user Unfollowed",
-      });
+      success: true,
+      message: "user Unfollowed",
+    });
   } catch (error) {
     next(new customError(error.message, 500));
   }

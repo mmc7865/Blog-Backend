@@ -111,41 +111,49 @@ module.exports.blogDeleteController = async (req, res, next) => {
 module.exports.blogLikesController = async (req, res, next) => {
   const { id } = req.params;
   try {
-    if (!id) return next(new CustomError("Blog not fetched", 400));
+    if (!id) return next(new CustomError("Blog ID is incorrect", 400));
 
     const blog = await Blog.findById(id);
 
-    console.log(blog)
-    
+    if (!blog) return next(new CustomError("Blog not found", 404));
+    console.log(blog);
+
     const { likes } = blog;
     const isAlreadyLiked = likes.includes(req.user._id);
 
     if (isAlreadyLiked) {
-      const updatedBlog = await Blog.findByIdAndUpdate(id, {
-        $pull: {
-          likes: req.user._id,
+      const updatedBlog = await Blog.findByIdAndUpdate(
+        id,
+        {
+          $pull: {
+            likes: req.user._id,
+          },
         },
-      });
+        { new: true }
+      );
 
       res.status(200).json({
         success: true,
         message: "Blog unliked successfully",
-        blog,
+        updatedBlog,
       });
-
     } else {
-      const updatedBlog = await Blog.findByIdAndUpdate(id, {
-        $push: {
-          likes: req.user._id,
+      const updatedBlog = await Blog.findByIdAndUpdate(
+        id,
+        {
+          $push: {
+            likes: req.user._id,
+          },
         },
-      });
+        { new: true }
+      );
       if (!blog) return next(new CustomError("Error in updation", 400));
       console.log(blog);
 
       res.status(200).json({
         success: true,
         message: "Blog liked successfully",
-        blog,
+        updatedBlog,
       });
     }
   } catch (error) {
