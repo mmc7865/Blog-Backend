@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.post('/create/:id',userAuthController, createCommentController)
 router.patch('/edit/:id', userAuthController, updateCommentController)
-router.get('/getAllComments', userAuthController, readAllCommentsController)
+router.get('/getAllComments/:id', userAuthController, readAllCommentsController)
 router.delete('/delete/:id', userAuthController, deleteCommentController)
 
 module.exports = router

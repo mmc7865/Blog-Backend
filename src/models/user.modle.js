@@ -23,25 +23,19 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  profile: {
+  image: {
     type: String,
   },
   followings: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
+      ref: "User",
     },
   ],
   followers: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    },
-  ],
-  blogs: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Blog",
+      ref: "User",
     },
   ],
 });

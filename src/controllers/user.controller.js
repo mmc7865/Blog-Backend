@@ -2,6 +2,7 @@ const User = require("../models/user.modle");
 const customError = require("../utils/cutomError");
 const bcrypt = require("bcrypt");
 const cacheClient = require("../service/cache.service");
+const uploadImage = require("../config/imagekit");
 
 module.exports.userRegisterController = async (req, res, next) => {
   const { name, userName, email, password } = req.body;
@@ -156,3 +157,40 @@ module.exports.followerController = async (req, res, next) => {
     next(new customError(error.message, 500));
   }
 };
+
+module.exports.userUpdateController = async (req, res, next) => {
+  try {
+    const {name, userName, email, password} = req.body
+    const file = req.file
+    const user = req.user
+
+    if(file){
+      user.image = await uploadImage(file)
+    }
+
+    if(name){
+      user.name = await name
+    }
+    if(userName){
+      user.userName = await userName
+    }
+    if(email){
+      user.email = await email
+    }
+    if(password){
+      user.password = await password
+    }
+
+    await user.save()
+
+    res.status(200).json({
+      success: true,
+      message: "user updated",
+      user
+    })
+
+
+  } catch (error) {
+    next(new customError(error.message, 500))
+  }
+}

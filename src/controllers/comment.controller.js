@@ -1,6 +1,5 @@
 const Comment = require("../models/comment.model");
 const customError = require("../utils/cutomError");
-const Blog = require("../models/blog.model");
 
 module.exports.createCommentController = async (req, res, next) => {
   const { id } = req.params;
@@ -18,12 +17,6 @@ module.exports.createCommentController = async (req, res, next) => {
 
     if (!comment)
       return next(new customError("Error in comment creation", 400));
-
-    const blog = await Blog.findByIdAndUpdate(id, {
-      $push: {
-        comments: comment._id,
-      },
-    });
 
     res.status(201).json({
       success: true,
@@ -59,8 +52,10 @@ module.exports.updateCommentController = async (req, res, next) => {
 };
 
 module.exports.readAllCommentsController = async (req, res, next) => {
+  const { id } = req.params;
   try {
-    const comments = await Comment.find();
+    if (!id) return next(new customError("ID is not fetched", 400));
+    const comments = await Comment.find({ blogID: id });
     if (!comments)
       return next(new customError("Error in fetching comments", 400));
 
@@ -79,7 +74,6 @@ module.exports.deleteCommentController = async (req, res, next) => {
 
   try {
     if (!id) return next(new customError("Error in ID fetching", 400));
-
     const deletedComment = await Comment.findByIdAndDelete(id);
     if (!deletedComment)
       return next(new customError("Error in comment deletion", 400));

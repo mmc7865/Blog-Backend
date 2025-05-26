@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 
 const blogSchema = new mongoose.Schema(
   {
-    post:{
+    image:{
       type: String,
+      required: true
     },
     heading: {
       type: String,
@@ -16,10 +17,6 @@ const blogSchema = new mongoose.Schema(
     likes: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-    }],
-    comments: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Comment"
     }],
     user: {
       type: mongoose.Schema.Types.ObjectId,
