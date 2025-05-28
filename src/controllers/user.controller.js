@@ -15,8 +15,7 @@ module.exports.userRegisterController = async (req, res, next) => {
       name,
       userName,
       email,
-      password,
-      isAdmin: false,
+      password
     });
 
     if (!user) return next(new customError("Error in user creation", 400));
@@ -192,5 +191,18 @@ module.exports.userUpdateController = async (req, res, next) => {
 
   } catch (error) {
     next(new customError(error.message, 500))
+  }
+}
+
+module.exports.getCurrentUserController = async (req, res, next) => {
+  try {
+    const loggedInUser = req.user
+    res.status(200).json({
+      success: true,
+      message: "user loggedIn",
+      loggedInUser
+    })
+  } catch (error) {
+    next(new customError(error.message))
   }
 }

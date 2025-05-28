@@ -1,14 +1,15 @@
 const express = require('express')
 const route = express.Router()
-const {userRegisterController, userLoginController, userLogoutController, followerController, userUpdateController} = require('../controllers/user.controller')
+const {userRegisterController, userLoginController, userLogoutController, followerController, userUpdateController, getAllUserController, getCurrentUserController} = require('../controllers/user.controller')
 const { userAuthController } = require('../middlewares/authMiddleware')
 const upload = require('../service/upload.multer')
 
 route.post('/register', userRegisterController)
 route.post('/login', userLoginController)
-route.put('/update',userAuthController,upload.single("image"),  userUpdateController)
+route.put('/update',userAuthController, upload.single("image"),  userUpdateController)
 route.get('/logout', userLogoutController)
-route.post('/follower/:id',userAuthController, followerController)
+route.put('/follower/:id',userAuthController, followerController)
+route.get('/getCurrentuser', userAuthController, getCurrentUserController)
 
 
 module.exports = route

@@ -4,13 +4,14 @@ const CustomError = require("../utils/cutomError");
 
 module.exports.blogCreateController = async (req, res, next) => {
   try {
-    const { heading, description } = req.body;
-    if (!heading || !description)
+    const { category, heading, description } = req.body;
+    if (!category || !heading || !description)
       return next(new CustomError("Error in data fetching", 400));
     const file = req.file;
     const imageUrl = await uploadImage(file);
 
     const blog = await Blog.create({
+      category,
       heading,
       description,
       image: imageUrl,
@@ -68,13 +69,13 @@ module.exports.blogUpdateController = async (req, res, next) => {
     const blog = await Blog.findById(id);
     if (!blog) return next(new CustomError("Blog not found", 404));
 
-    const { heading, description } = req.body;
+    const {category, heading, description } = req.body;
     const file = req.file;
 
     if (file) {
       blog.post = await uploadImage(file);
     }
-
+    if (category) blog.category = category;
     if (heading) blog.heading = heading;
     if (description) blog.description = description;
 

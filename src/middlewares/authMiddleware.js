@@ -1,7 +1,6 @@
 const User = require("../models/user.modle");
 const CustomError = require("../utils/cutomError");
 const jwt = require("jsonwebtoken");
-const cacheClient = require('../service/cache.service')
 
 module.exports.userAuthController = async (req, res, next) => {
   try {
@@ -10,13 +9,14 @@ module.exports.userAuthController = async (req, res, next) => {
 
     const decode = jwt.verify(Token, process.env.JWT_SECRET);
     if (!decode) return next(new CustomError("token mismatched", 400));
-    // console.log("Decode:--> ",decode)
+    
     const user = await User.findById(decode.id)
-    // console.log(user)
+    if(!user) return next(new CustomError('user not found', 404))
     req.user = user
-
-    next();
+    
+      next();
   } catch (error) {
     next(new CustomError(error.message, 500));
   }
 };
+
